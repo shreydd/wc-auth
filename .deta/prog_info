@@ -1,0 +1,1 @@
+{"id":"416ec146-1078-4fba-9a52-a893c5996d05","space":14551,"runtime":"nodejs14.x","name":"backend-wc","path":"r3hjs2","project":"c0efk60t","account":"144798365827","region":"ap-southeast-1","deps":["express@^4.18.2","pg@^8.8.0"],"envs":null,"public":true,"log_level":"debug","cron":""}
