@@ -22,8 +22,8 @@ const getUsers = async () => {
 
 const findUser = (phoneOrEmail, password, response) => {
 
+    // get updated users
     getUsers();
-    console.log(validUsers)
 
     let emailReg = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
     let phoneReg = /^\d+$/;
