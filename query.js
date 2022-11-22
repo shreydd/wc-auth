@@ -11,14 +11,19 @@ const pool = new Pool({
 
 let validUsers = [];
 
-pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
-    if (error) {
-        throw error
-    }
-    validUsers = results.rows;
-})
+const getUsers = async () => {    
+    await pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
+        if (error) {
+            throw error
+        }
+        validUsers = results.rows;
+    })
+}
 
 const findUser = (phoneOrEmail, password, response) => {
+
+    getUsers();
+    console.log(validUsers)
 
     let emailReg = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
     let phoneReg = /^\d+$/;
