@@ -5,7 +5,7 @@ const pool = new Pool({
     user: 'postgres',
     host: 'db.xrznsauaygbswamezacw.supabase.co',
     database: 'postgres',
-    password: process.env.WC_USERS_SUPABASE_PASS,
+    password: `${process.env.WC_USERS_SUPABASE_PASS}`,
     port: 5432,
 });
 
@@ -57,7 +57,6 @@ const findUser = (phoneOrEmail, password, response) => {
 
                 if (validUser.password === password) {
                     userExists = true;
-                    console.log("log in ph no");
                     response.status(200).json({"name":validUser.name});
                 } else {
                     response.status(404).json({"error": "password"});

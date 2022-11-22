@@ -3,7 +3,7 @@ const cors = require('cors')
 const app = express()
 
 const bodyParser = require('body-parser')
-const port = 9000;
+const port = process.env.PORT;
 
 const db = require('./query');
 
@@ -25,9 +25,6 @@ app.post('/auth' , (req, res) => {
 })
 
 // for local dev
-// app.listen(port, () => {
-//     console.log(`App running on port ${port}.`)
-// })
-
-// export 'app' for prod
-module.exports = app
+app.listen(port, () => {
+    console.log(`App running on port ${port}.`)
+})
