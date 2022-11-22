@@ -1,52 +1,75 @@
 const { request, response } = require('express');
-
 const Pool = require('pg').Pool
 
 const pool = new Pool({
     user: 'postgres',
     host: 'db.xrznsauaygbswamezacw.supabase.co',
     database: 'postgres',
-    password: 'wc-be-19/11',
+    password: process.env.WC_USERS_SUPABASE_PASS,
     port: 5432,
 });
 
-const getUsers = (request, response) => {
-    pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
-        if (error) {
-            throw error
-        }
-        response.status(200).json(results.rows)
-    })
-}
+let validUsers = [];
+
+pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
+    if (error) {
+        throw error
+    }
+    validUsers = results.rows;
+})
 
 const findUser = (phoneOrEmail, password, response) => {
 
-    let reg = /^\d+$/;
+    let emailReg = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    let phoneReg = /^\d+$/;
 
-    if (reg.test(phoneOrEmail)) {
-        // if numeric
-        pool.query(`SELECT name, phone, password 
-        FROM users 
-        WHERE phone=$1
-        AND password =$2`, [phoneOrEmail, password], (error, results) => {
-            if (error) {
-                response.send(error);
-            }
-            response.status(200).json(results.rows);
-        })
+    let userExists = false;
+    let userEmailExists = false;
+    let userPhNoExists = false;
 
-    } else {
-        pool.query(`SELECT name, email, password 
-        FROM users 
-        WHERE email=$1
-        AND password =$2`, [phoneOrEmail, password], (error, results) => {
-            if (error) {
-                response.send(error);
+    // check if email and user email ID exists
+    if (emailReg.test(phoneOrEmail)) {
+        for (const validUser of validUsers) {
+            if (validUser.email === phoneOrEmail) {
+                userEmailExists = true;
+
+                if (validUser.password === password) {
+                    userExists = true;
+                    response.status(200).json({"name":validUser.name})
+                } else {
+                    response.status(404).json({'error': 'password'});
+                    break;
+                }
+
             }
-            response.status(200).json(results.rows);
-        })
+        }
+
+        if (userEmailExists == false) {
+            response.status(404).json({'error': 'email'})
+        }
+    }
+
+    // check if ph no and user ph no exists
+    else if (phoneReg.test(phoneOrEmail)) {
+        for (const validUser of validUsers) {
+            if (validUser.phone === phoneOrEmail) {
+                userPhNoExists = true;
+
+                if (validUser.password === password) {
+                    userExists = true;
+                    console.log("log in ph no");
+                    response.status(200).json({"name":validUser.name});
+                } else {
+                    response.status(404).json({"error": "password"});
+                    break;
+                }
+            }
+        }
+        if (userPhNoExists == false) {
+            response.status(404).json({"error": "phone"})
+        }
     }
 
 }
 
-module.exports = { getUsers, findUser }
+module.exports = { findUser }
