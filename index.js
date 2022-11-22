@@ -5,10 +5,6 @@ const app = express()
 const bodyParser = require('body-parser')
 const port = 9000;
 
-const corsOptions = {
-    "origin": "*"
-}
-
 const db = require('./query');
 
 app.use(bodyParser.json())
@@ -23,7 +19,7 @@ app.use(cors())
 
 app.get('/', (req, res) => res.json({ info: 'Auth app for wc assignment' }));
 
-app.post('/auth', (req, res) => {
+app.post('/auth' , (req, res) => {
     const { phoneOrEmail, password } = req.body
     db.findUser(phoneOrEmail, password, res);
 })
